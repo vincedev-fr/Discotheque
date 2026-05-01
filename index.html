@@ -1,497 +1,552 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ma Discothèque</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@300;400;600&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --bg: #0d0d0f;
-    --surface: #141418;
-    --surface2: #1c1c22;
-    --border: #2a2a35;
-    --accent: #e8b84b;
-    --accent2: #e05c5c;
-    --neon: #4be8c4;
-    --text: #d8d4cc;
-    --muted: #6b6b7a;
-    --playing: #e8b84b;
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JukeBox TimeMachine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@300;400;600&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0d0d0f;
+      --surface: #141418;
+      --surface2: #1c1c22;
+      --border: #2a2a35;
+      --accent: #e8b84b;
+      --accent2: #e05c5c;
+      --neon: #4be8c4;
+      --text: #d8d4cc;
+      --muted: #6b6b7a;
+      --playing: #e8b84b;
+    }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'IBM Plex Mono', monospace;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'IBM Plex Mono', monospace;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
 
-  /* Background texture */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      radial-gradient(ellipse 80% 50% at 20% -10%, rgba(232,184,75,0.06) 0%, transparent 60%),
-      radial-gradient(ellipse 60% 40% at 80% 110%, rgba(75,232,196,0.05) 0%, transparent 60%);
-    pointer-events: none;
-    z-index: 0;
-  }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(ellipse 80% 50% at 20% -10%, rgba(232,184,75,0.06) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 110%, rgba(75,232,196,0.05) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
 
-  .container { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; padding: 0 24px; }
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 24px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
 
-  /* HEADER */
-  header {
-    border-bottom: 1px solid var(--border);
-    padding: 28px 0 20px;
-    display: flex;
-    align-items: baseline;
-    gap: 20px;
-  }
-  header h1 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(2.4rem, 5vw, 4rem);
-    letter-spacing: 0.06em;
-    color: var(--accent);
-    line-height: 1;
-  }
-  header .tagline {
-    font-size: 0.7rem;
-    color: var(--muted);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-  }
-  .header-right {
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-  #csv-label {
-    cursor: pointer;
-    font-size: 0.68rem;
-    letter-spacing: 0.12em;
-    color: var(--muted);
-    text-transform: uppercase;
-    border: 1px solid var(--border);
-    padding: 7px 14px;
-    border-radius: 3px;
-    transition: border-color .2s, color .2s;
-  }
-  #csv-label:hover { border-color: var(--accent); color: var(--accent); }
-  #csv-input { display: none; }
-  #song-count {
-    font-size: 0.68rem;
-    color: var(--muted);
-    letter-spacing: 0.08em;
-    white-space: nowrap;
-  }
+    /* ── ZONE 1 : HEADER ─────────────────────────────── */
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 28px 0 20px;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    header h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      letter-spacing: 0.06em;
+      line-height: 1;
+      white-space: nowrap;
+    }
+    .title-jukebox {
+      font-family: 'Bebas Neue', sans-serif;
+      color: var(--accent);
+      letter-spacing: 0.06em;
+    }
+    .title-timemachine {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      color: var(--neon);
+      letter-spacing: 0.02em;
+    }
+    .header-actions {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .action-btn-header {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 7px 14px;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all .15s;
+      white-space: nowrap;
+    }
+    .action-btn-header:hover { border-color: var(--accent); color: var(--accent); }
+    #song-count {
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+    }
+    #global-file-input { display: none; }
 
-  /* MAIN LAYOUT */
-  .main {
-    display: grid;
-    grid-template-columns: 300px 1fr;
-    gap: 24px;
-    padding: 24px 0 40px;
-    align-items: start;
-  }
+    /* Toggle filters button */
+    #btn-toggle-filters {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
+      padding: 6px 12px;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    #btn-toggle-filters:hover { border-color: var(--accent); color: var(--accent); }
 
-  /* LEFT PANEL */
-  .left-panel { display: flex; flex-direction: column; gap: 16px; }
+    /* ── MAIN LAYOUT (ZONES 2-5) ────────────────────── */
+    .main {
+      flex: 1;
+      overflow: hidden;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 30fr 70fr;
+      gap: 20px;
+      padding: 20px 0 40px;
+      align-items: start;
+      transition: grid-template-columns 0.3s;
+    }
+    .main.right-collapsed {
+      grid-template-columns: 1fr 0;
+    }
+    .main.right-collapsed .right-panel { overflow: hidden; width: 0; padding: 0; margin: 0; border: none; }
 
-  /* PLAYER */
-  .player-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    overflow: hidden;
-  }
-  .player-header {
-    background: var(--surface2);
-    padding: 12px 16px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    border-bottom: 1px solid var(--border);
-  }
-  .player-header .dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: var(--accent);
-    box-shadow: 0 0 6px var(--accent);
-    animation: pulse 2s infinite;
-  }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
-  .player-header span {
-    font-size: 0.65rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-  #yt-embed-wrap {
-    position: relative;
-    padding-bottom: 56.25%;
-    background: #000;
-  }
-  #yt-player {
-    position: absolute; inset: 0;
-    width: 100%; height: 100%;
-    border: none;
-  }
-  .ctrl-btn.active-play { background: var(--neon); color: #000; border-color: var(--neon); }
-  .ctrl-btn.active-loop { background: var(--accent2); color: #fff; border-color: var(--accent2); }
-  .now-playing {
-    padding: 14px 16px;
-    border-top: 1px solid var(--border);
-  }
-  #np-title {
-    font-family: 'Playfair Display', serif;
-    font-style: italic;
-    font-size: 1rem;
-    color: var(--accent);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-bottom: 3px;
-  }
-  #np-artist {
-    font-size: 0.65rem;
-    color: var(--muted);
-    letter-spacing: 0.1em;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  #np-year {
-    font-size: 0.6rem;
-    color: var(--border);
-    margin-top: 4px;
-    letter-spacing: 0.08em;
-  }
+    .main.right-collapsed .player-controls {
+    justify-content: center;  /* centre les boutons sous la vidéo */
+    }  
 
-  .player-controls {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 16px;
-    border-top: 1px solid var(--border);
-  }
-  .ctrl-btn {
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--text);
-    border-radius: 4px;
-    cursor: pointer;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.7rem;
-    padding: 7px 10px;
-    transition: all .15s;
-    letter-spacing: 0.05em;
-  }
-  .ctrl-btn:hover { border-color: var(--accent); color: var(--accent); }
-  .ctrl-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
-  #btn-shuffle { margin-left: auto; font-size: 0.65rem; }
+    /* Panneau gauche (lecteur + playlist) : hauteur contrainte, pas de scroll global */
+    .left-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      transition: all 0.3s;
+      height: 100%;
+      overflow: hidden;
+    }
 
-  /* PLAYLIST PANEL */
-  .playlist-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    overflow: hidden;
-  }
-  .playlist-header {
-    background: var(--surface2);
-    padding: 10px 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid var(--border);
-  }
-  .playlist-header span {
-    font-size: 0.62rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-  #playlist-count-badge {
-    font-size: 0.6rem;
-    color: var(--neon);
-    letter-spacing: 0.1em;
-  }
-  #playlist-ul {
-    list-style: none;
-    max-height: 280px;
-    overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: var(--border) transparent;
-  }
-  #playlist-ul li {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 9px 14px;
-    border-bottom: 1px solid rgba(255,255,255,0.03);
-    cursor: pointer;
-    transition: background .15s;
-    font-size: 0.68rem;
-  }
-  #playlist-ul li:hover { background: rgba(255,255,255,0.04); }
-  #playlist-ul li.active {
-    background: rgba(232,184,75,0.1);
-    border-left: 2px solid var(--accent);
-  }
-  #playlist-ul li .pl-idx { color: var(--muted); min-width: 20px; font-size: 0.58rem; }
-  #playlist-ul li .pl-title { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text); }
-  #playlist-ul li .pl-artist { color: var(--muted); font-size: 0.6rem; white-space: nowrap; }
-  #playlist-ul li .pl-remove {
-    color: var(--border);
-    font-size: 0.75rem;
-    padding: 2px 5px;
-    border-radius: 3px;
-    transition: color .15s;
-    line-height: 1;
-  }
-  #playlist-ul li:hover .pl-remove { color: var(--accent2); }
-  .playlist-actions {
-    padding: 10px 14px;
-    border-top: 1px solid var(--border);
-    display: flex;
-    gap: 8px;
-  }
-  .action-btn {
-    flex: 1;
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.6rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 7px 4px;
-    border-radius: 3px;
-    cursor: pointer;
-    transition: all .15s;
-  }
-  .action-btn:hover { border-color: var(--neon); color: var(--neon); }
+    /* Panneau droit (filtres + résultats) : scroll interne si nécessaire */
+    .right-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      transition: all 0.3s;
+      height: 100%;
+      overflow-y: auto;
+    }
 
-  /* RIGHT PANEL */
-  .right-panel { display: flex; flex-direction: column; gap: 16px; }
+    /* ── LEFT PANEL (Zones 4 & 5) ──────────────────── */
+    .player-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+    }
 
-  /* FILTERS */
-  .filters-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 16px 20px;
-  }
-  .filters-title {
-    font-size: 0.62rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 14px;
-  }
-  .filters-grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr auto;
-    gap: 10px;
-    align-items: end;
-  }
-  .filter-group { display: flex; flex-direction: column; gap: 5px; }
-  .filter-group label {
-    font-size: 0.58rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-  .filter-group input, .filter-group select {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.72rem;
-    padding: 8px 10px;
-    border-radius: 3px;
-    outline: none;
-    transition: border-color .2s;
-    width: 100%;
-  }
-  .filter-group input:focus, .filter-group select:focus { border-color: var(--accent); }
-  .filter-group select option { background: var(--surface); }
-  .year-range { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-  .reset-btn {
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.6rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    padding: 8px 14px;
-    border-radius: 3px;
-    cursor: pointer;
-    transition: all .15s;
-    white-space: nowrap;
-    height: fit-content;
-  }
-  .reset-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+    .playlist-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+    }
 
-  /* RESULTS TABLE */
-  .results-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    overflow: hidden;
-  }
-  .results-header {
-    background: var(--surface2);
-    padding: 10px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid var(--border);
-  }
-  .results-header .label {
-    font-size: 0.62rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-  #results-count {
-    font-size: 0.62rem;
-    color: var(--neon);
-    letter-spacing: 0.08em;
-  }
-  .add-all-btn {
-    background: none;
-    border: 1px solid var(--accent);
-    color: var(--accent);
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.6rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    padding: 5px 12px;
-    border-radius: 3px;
-    cursor: pointer;
-    transition: all .15s;
-  }
-  .add-all-btn:hover { background: var(--accent); color: #000; }
+    /* Player specific styles */
+    .player-header, .playlist-header {
+      background: var(--surface2);
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .player-header .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 6px var(--accent);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+    .player-header span, .playlist-header span {
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
 
-  .table-wrap {
-    overflow-x: auto;
-    max-height: 460px;
-    overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: var(--border) transparent;
-  }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.68rem;
-  }
-  thead th {
-    background: var(--surface2);
-    padding: 9px 14px;
-    text-align: left;
-    font-size: 0.58rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--muted);
-    font-weight: 400;
-    position: sticky;
-    top: 0;
-    border-bottom: 1px solid var(--border);
-    cursor: pointer;
-    user-select: none;
-    white-space: nowrap;
-  }
-  thead th:hover { color: var(--accent); }
-  thead th.sorted-asc::after { content: ' ↑'; color: var(--accent); }
-  thead th.sorted-desc::after { content: ' ↓'; color: var(--accent); }
-  tbody tr {
-    border-bottom: 1px solid rgba(255,255,255,0.03);
-    cursor: pointer;
-    transition: background .12s;
-  }
-  tbody tr:hover { background: rgba(255,255,255,0.04); }
-  tbody tr.playing { background: rgba(232,184,75,0.08); }
-  td { padding: 9px 14px; vertical-align: middle; }
-  td.t-artist { color: var(--text); font-weight: 600; }
-  td.t-title { color: var(--text); font-style: italic; font-family: 'Playfair Display', serif; font-size: 0.75rem; }
-  td.t-album { color: var(--muted); font-size: 0.6rem; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  td.t-year { color: var(--muted); text-align: center; }
-  td.t-note { text-align: center; }
-  .star { color: var(--accent); font-size: 0.75rem; }
-  td.t-duration { color: var(--muted); font-size: 0.6rem; text-align: center; font-variant-numeric: tabular-nums; }
-  .add-row-btn {
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    font-size: 0.65rem;
-    padding: 3px 9px;
-    border-radius: 3px;
-    cursor: pointer;
-    transition: all .15s;
-    white-space: nowrap;
-  }
-  .add-row-btn:hover { border-color: var(--neon); color: var(--neon); }
-  .add-row-btn.in-playlist { border-color: var(--accent); color: var(--accent); }
+    #yt-embed-wrap {
+      position: relative;
+      background: #000;
+      width: 100%;
+      aspect-ratio: 16 / 9;           /* ratio constant */
+      max-height: 45vh;               /* jamais plus de 50% de la hauteur de la fenêtre */
+      margin: 0 auto;                 /* centre si la largeur dépasse (optionnel) */
+      /*       padding-bottom: 56.25%;   /* Ratio 16:9 */
+   }
+    #yt-player {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    .now-playing {
+      padding: 12px 14px;
+      border-top: 1px solid var(--border);
+    }
+    #np-title {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--accent);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 3px;
+    }
+    #np-artist {
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    #np-year {
+      font-size: 0.6rem;
+      color: var(--border);
+      margin-top: 4px;
+      letter-spacing: 0.08em;
+    }
+    .player-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-top: 1px solid var(--border);
+    }
+    .ctrl-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      padding: 6px 10px;
+      transition: all .15s;
+      letter-spacing: 0.05em;
+    }
+    .ctrl-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .ctrl-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
+    .ctrl-btn.active-play { background: var(--neon); color: #000; border-color: var(--neon); }
+    .ctrl-btn.active-loop { background: var(--accent2); color: #fff; border-color: var(--accent2); }
 
-  .no-results {
-    padding: 40px;
-    text-align: center;
-    color: var(--muted);
-    font-size: 0.7rem;
-    letter-spacing: 0.1em;
-  }
+    /* Playlist card */
+    #playlist-ul {
+      list-style: none;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+      flex: 1;
+    }
+    #playlist-ul li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+      cursor: pointer;
+      transition: background .15s;
+      font-size: 0.68rem;
+    }
+    #playlist-ul li:hover { background: rgba(255,255,255,0.04); }
+    #playlist-ul li.active {
+      background: rgba(232,184,75,0.1);
+      border-left: 2px solid var(--accent);
+    }
+    #playlist-ul li .pl-idx { color: var(--muted); min-width: 20px; font-size: 0.58rem; }
+    #playlist-ul li .pl-title { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text); }
+    #playlist-ul li .pl-artist { color: var(--muted); font-size: 0.6rem; white-space: nowrap; margin-right: 8px; }
+    #playlist-ul li .pl-remove {
+      color: var(--border);
+      font-size: 0.75rem;
+      padding: 2px 5px;
+      border-radius: 3px;
+      transition: color .15s;
+      line-height: 1;
+    }
+    #playlist-ul li:hover .pl-remove { color: var(--accent2); }
+    .playlist-actions {
+      padding: 8px 14px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 8px;
+    }
+    .action-btn {
+      flex: 1;
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 7px 4px;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .action-btn:hover { border-color: var(--neon); color: var(--neon); }
 
-  /* NOTIFICATION */
-  #notif {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    background: var(--surface2);
-    border: 1px solid var(--accent);
-    color: var(--accent);
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.68rem;
-    letter-spacing: 0.08em;
-    padding: 10px 18px;
-    border-radius: 4px;
-    opacity: 0;
-    transform: translateY(10px);
-    transition: opacity .3s, transform .3s;
-    pointer-events: none;
-    z-index: 100;
-  }
-  #notif.show { opacity: 1; transform: translateY(0); }
+    /* ── RIGHT PANEL (Zones 2 & 3) ──────────────────── */
+    .filters-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 14px 18px;
+    }
+    .results-card {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 14px 18px;
+    }
+    .filters-title, .results-header .label {
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+    .filters-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr auto;
+      gap: 10px;
+      align-items: end;
+    }
+    .filter-group { display: flex; flex-direction: column; gap: 5px; }
+    .filter-group label {
+      font-size: 0.58rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .filter-group input, .filter-group select {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      padding: 8px 10px;
+      border-radius: 3px;
+      outline: none;
+      width: 100%;
+    }
+    .filter-group input:focus, .filter-group select:focus { border-color: var(--accent); }
+    .year-range { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .reset-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 8px 14px;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all .15s;
+      white-space: nowrap;
+    }
+    .reset-btn:hover { border-color: var(--accent2); color: var(--accent2); }
 
-  @media (max-width: 900px) {
-    .main { grid-template-columns: 1fr; }
-    .filters-grid { grid-template-columns: 1fr 1fr; }
-    .filters-grid .reset-btn { grid-column: span 2; }
-  }
-</style>
+    .year-range input[type="number"] {
+      -moz-appearance: textfield;
+      appearance: textfield;
+    }
+    .year-range input[type="number"]::-webkit-inner-spin-button,
+    .year-range input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    .year-range input {
+      min-width: 65px;
+    }
+
+    .results-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    #results-count { font-size: 0.62rem; color: var(--neon); letter-spacing: 0.08em; }
+    .add-all-btn {
+      background: none;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    .add-all-btn:hover { background: var(--accent); color: #000; }
+
+    .table-wrap {
+      flex: 1;
+      overflow-y: auto;
+      min-height: 0;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 0.68rem; }
+    thead th {
+      background: var(--surface2);
+      padding: 9px 10px;
+      text-align: left;
+      font-size: 0.58rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 400;
+      position: sticky;
+      top: 0;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+    }
+    thead th:hover { color: var(--accent); }
+    thead th.sorted-asc::after { content: ' ↑'; color: var(--accent); }
+    thead th.sorted-desc::after { content: ' ↓'; color: var(--accent); }
+    tbody tr { border-bottom: 1px solid rgba(255,255,255,0.03); cursor: pointer; transition: background .12s; }
+    tbody tr:hover { background: rgba(255,255,255,0.04); }
+    tbody tr.playing { background: rgba(232,184,75,0.08); }
+    td { padding: 9px 10px; vertical-align: middle; }
+    td.t-artist { color: var(--text); font-weight: 600; }
+    td.t-title { color: var(--text); font-style: italic; font-family: 'Playfair Display', serif; font-size: 0.75rem; }
+    td.t-album { color: var(--muted); font-size: 0.6rem; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    td.t-year { color: var(--muted); text-align: center; }
+    td.t-note { text-align: center; }
+    .star { color: var(--accent); font-size: 0.75rem; }
+    .add-row-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.65rem;
+      padding: 3px 9px;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all .15s;
+      white-space: nowrap;
+    }
+    .add-row-btn:hover { border-color: var(--neon); color: var(--neon); }
+    .add-row-btn.in-playlist { border-color: var(--accent); color: var(--accent); }
+
+    .no-results {
+      padding: 30px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+    }
+
+    #notif {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--surface2);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      padding: 10px 18px;
+      border-radius: 4px;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity .3s, transform .3s;
+      pointer-events: none;
+      z-index: 100;
+    }
+    #notif.show { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 900px) {
+      .main { grid-template-columns: 1fr; }
+      .main.right-collapsed { grid-template-columns: 1fr; }
+      .right-panel { display: block; width: auto; }
+      .filters-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
 </head>
 <body>
 
 <div class="container">
+  <!-- ═══════════ ZONE 1 ═══════════ -->
   <header>
-    <h1>Ma Discothèque</h1>
-    <span class="tagline">Playlist Builder</span>
-    <div class="header-right">
-      <span id="song-count"></span>
-      <label id="csv-label" for="csv-input">⊕ Charger CSV</label>
-      <input type="file" id="csv-input" accept=".csv,.txt">
+    <h1>
+      <span class="title-jukebox">JukeBox</span>
+      <span class="title-timemachine">TimeMachine</span>
+    </h1>
+    <div class="header-actions">
+      <span id="song-count">0 titres</span>
+      <button class="action-btn-header" id="btn-load-global">📂 Charger liste (CSV/JSON)</button>
+      <button class="action-btn-header" id="btn-save-global">💾 Sauvegarder liste</button>
+      <button id="btn-toggle-filters" title="Réduire/Afficher les filtres">☰ Filtres</button>
     </div>
+    <input type="file" id="global-file-input" accept=".csv,.json">
   </header>
 
-  <div class="main">
-    <!-- LEFT -->
-    <div class="left-panel">
+  <!-- ═══════════ MAIN (ZONES 2-5) ═══════════ -->
+  <div class="main" id="main-layout">
+    <!-- LEFT PANEL (Zones 4 & 5) -->
+    <div class="left-panel" id="left-panel">
+      <!-- Zone 4 : Lecteur -->
       <div class="player-card">
         <div class="player-header">
           <div class="dot" id="player-dot" style="background:var(--muted);box-shadow:none;animation:none"></div>
@@ -514,6 +569,7 @@
         </div>
       </div>
 
+      <!-- Zone 5 : Playlist -->
       <div class="playlist-card">
         <div class="playlist-header">
           <span>Playlist en cours</span>
@@ -523,13 +579,15 @@
         <div class="playlist-actions">
           <button class="action-btn" id="btn-clear-pl">✕ Vider</button>
           <button class="action-btn" id="btn-save-pl">💾 Sauvegarder</button>
-          <button class="action-btn" id="btn-export-pl">⬇ Exporter</button>
+          <button class="action-btn" id="btn-load-pl">📂 Charger</button>
         </div>
+        <input type="file" id="pl-file-input" accept=".csv,.json" style="display:none">
       </div>
     </div>
 
-    <!-- RIGHT -->
-    <div class="right-panel">
+    <!-- RIGHT PANEL (Zones 2 & 3) -->
+    <div class="right-panel" id="right-panel">
+      <!-- Zone 2 : Filtres -->
       <div class="filters-card">
         <div class="filters-title">Filtres de recherche</div>
         <div class="filters-grid">
@@ -563,6 +621,7 @@
         </div>
       </div>
 
+      <!-- Zone 3 : Résultats -->
       <div class="results-card">
         <div class="results-header">
           <span class="label">Résultats</span>
@@ -575,10 +634,9 @@
               <tr>
                 <th data-col="artist">Artiste</th>
                 <th data-col="title">Titre</th>
-                <th data-col="album">Album</th>
+                <th data-col="album">Album original</th>
                 <th data-col="year">Année</th>
                 <th data-col="note">Note</th>
-                <th data-col="duration">Durée</th>
                 <th></th>
               </tr>
             </thead>
@@ -610,12 +668,10 @@ let ytPlayer = null;
 let ytReady = false;
 let pendingVideoId = null;
 
-// Load YouTube IFrame API script
 const ytScript = document.createElement('script');
 ytScript.src = 'https://www.youtube.com/iframe_api';
 document.head.appendChild(ytScript);
 
-// Called automatically by YouTube API when ready
 window.onYouTubeIframeAPIReady = function() {
   ytPlayer = new YT.Player('yt-player', {
     height: '100%',
@@ -636,7 +692,6 @@ window.onYouTubeIframeAPIReady = function() {
         }
       },
       onStateChange: function(e) {
-        // YT.PlayerState.ENDED = 0
         if (e.data === YT.PlayerState.ENDED) {
           if (loopMode) {
             ytPlayer.seekTo(0);
@@ -647,7 +702,6 @@ window.onYouTubeIframeAPIReady = function() {
         }
       },
       onError: function(e) {
-        // On error (video unavailable etc.), skip to next if autoplay is on
         if (autoplayMode || loopMode) {
           setTimeout(() => nextSong(), 1500);
           showNotif('Vidéo indisponible, titre suivant…');
@@ -666,7 +720,7 @@ function loadVideo(ytid) {
   }
 }
 
-// Embedded default data from CSV
+// ── Default CSV data ───────────────────────────────────────────────────────
 const DEFAULT_CSV = `Interpretes;N°;Album/Titres;Duree;Annee;Album Original;Note;Lien youtube
 Lloyd Cole & the Commotions;3;Forest fire;00:05:09;1984;_;20;GoLx5MKrr-g
 Peter Gabriel;1;Solsbury hill;00:04:20;1977;First album;18;_OO2PuGz-H8
@@ -697,7 +751,7 @@ John Travolta & Olivia Newton John;;Summer nights;;1978;;1;oAbPy-oLW4
 Alannah Myles;;Black Velvet;;1989;;1;tT4d1LQy4es
 Alpha Blondy;;Sweet Fanta Diallo;;1987;;1;wv15GiQ4sVg`;
 
-// ── CSV Parser ─────────────────────────────────────────────────────────────
+// ── CSV/JSON Parser ────────────────────────────────────────────────────────
 function parseCSV(text) {
   const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
   const songs = [];
@@ -712,6 +766,7 @@ function parseCSV(text) {
     const album  = (cols[5] || '').trim();
     let   note   = parseInt(cols[6]) || 0;
     let   ytid   = (cols[7] || '').trim().replace(/^\//, '');
+    const order  = (cols[8] || '').trim();
 
     if (!artist || !title || !ytid) continue;
     if (!/^[A-Za-z0-9_\-]{6,15}$/.test(ytid)) continue;
@@ -724,9 +779,47 @@ function parseCSV(text) {
     if (note === 1) note = null;
     const albumClean = (album === '_' || album === '') ? '' : album.replace(/^"|"$/g, '').trim();
 
-    songs.push({ artist, title, duration: dur, year, album: albumClean, note, ytid });
+    songs.push({ artist, title, duration: dur, year, album: albumClean, note, ytid, order: order || '' });
   }
   return songs;
+}
+
+function parseJSON(text) {
+  const data = JSON.parse(text);
+  if (!Array.isArray(data)) throw new Error('JSON non reconnu');
+  const songs = [];
+  const seen = new Set();
+  for (const item of data) {
+    const artist = (item.Interpretes || item.interpretes || item.artist || '').trim();
+    const title  = (item.Titres || item.titres || item.title || '').trim();
+    const dur    = (item.Duree || item.duree || item.duration || '').trim();
+    let   year   = (item.Annee || item.annee || item.year || '').toString().trim();
+    const album  = (item['Album original'] || item.album || '').trim();
+    let   note   = parseInt(item.Note || item.note) || 0;
+    let   ytid   = (item['Lien youtube'] || item['lien youtube'] || item.ytid || '').trim().replace(/^\//, '');
+    const order  = (item.Ordre || item.ordre || '').toString().trim();
+
+    if (!artist || !title || !ytid) continue;
+    if (!/^[A-Za-z0-9_\-]{6,15}$/.test(ytid)) continue;
+    const key = `${artist.toLowerCase()}|${title.toLowerCase()}|${ytid}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+
+    if (year === '?' || year === '') year = '?';
+    if (note === 1) note = null;
+    const albumClean = (album === '_' || album === '') ? '' : album.replace(/^"|"$/g, '').trim();
+    songs.push({ artist, title, duration: dur, year, album: albumClean, note, ytid, order: order || '' });
+  }
+  return songs;
+}
+
+function parseFile(content, fileName) {
+  if (fileName.endsWith('.json') || content.trim().startsWith('[') || content.trim().startsWith('{')) {
+    try { return parseJSON(content); } catch(e) {
+      showNotif('JSON invalide, tentative CSV…');
+    }
+  }
+  return parseCSV(content);
 }
 
 // ── Render helpers ─────────────────────────────────────────────────────────
@@ -764,8 +857,7 @@ function renderResults() {
       <td class="t-album">${esc(s.album)}</td>
       <td class="t-year">${s.year}</td>
       <td class="t-note">${noteStars(s.note)}</td>
-      <td class="t-duration">${s.duration || '—'}</td>
-      <td><button class="add-row-btn ${inPl ? 'in-playlist' : ''}" data-i="${i}">${inPl ? '✓ Ajouté' : '+ Playlist'}</button></td>
+      <td><button class="add-row-btn ${inPl ? 'in-playlist' : ''}" data-i="${i}">${inPl ? '✓ Ajouté' : '+ Ajouter'}</button></td>
     </tr>`;
   }).join('');
 }
@@ -773,7 +865,10 @@ function renderResults() {
 function renderPlaylist() {
   const ul = document.getElementById('playlist-ul');
   document.getElementById('playlist-count-badge').textContent = `${playlist.length} titre(s)`;
-  if (!playlist.length) { ul.innerHTML = '<li style="color:var(--muted);font-size:.65rem;padding:14px;text-align:center;cursor:default">Playlist vide</li>'; return; }
+  if (!playlist.length) {
+    ul.innerHTML = '<li style="color:var(--muted);font-size:.65rem;padding:14px;text-align:center;cursor:default">Playlist vide</li>';
+    return;
+  }
   ul.innerHTML = playlist.map((s, i) => `
     <li class="${i === currentIdx ? 'active' : ''}" data-pl-i="${i}">
       <span class="pl-idx">${i + 1}</span>
@@ -795,10 +890,26 @@ function applyFilters() {
   const nMin  = document.getElementById('f-note').value;
   const album = document.getElementById('f-album').value.toLowerCase().trim();
 
+  // Détecter si une plage de dates a été explicitement saisie
+  const hasYearFilter = document.getElementById('f-year-from').value !== '' || 
+                        document.getElementById('f-year-to').value !== '';
+
   filteredSongs = allSongs.filter(s => {
     if (q && !s.artist.toLowerCase().includes(q) && !s.title.toLowerCase().includes(q)) return false;
+    
+    // Gestion des années
     const yr = parseInt(s.year);
-    if (!isNaN(yr)) { if (yr < yFrom || yr > yTo) return false; }
+    const hasValidYear = !isNaN(yr);
+    if (hasYearFilter) {
+      // Si plage de dates demandée, on exclut les pistes sans année valide
+      if (!hasValidYear) return false;
+      if (yFrom > 0 && yr < yFrom) return false;
+      if (yTo > 0 && yr > yTo) return false;
+    } else {
+      // Pas de filtre année : on garde tout (y compris les "?")
+      // (rien à faire)
+    }
+
     if (nMin) {
       if (!s.note) return false;
       if (nMin === '20' && s.note < 20) return false;
@@ -835,7 +946,6 @@ function playSong(idx) {
   dot.style.animation = 'pulse 2s infinite';
   renderPlaylist();
   renderResults();
-  // Scroll active item into view
   setTimeout(() => {
     const active = document.querySelector('#playlist-ul li.active');
     if (active) active.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
@@ -852,7 +962,6 @@ function playFromFiltered(idx) {
   playSong(playlist.length - 1);
 }
 
-// ── Add to playlist ────────────────────────────────────────────────────────
 function addSong(s) {
   if (isInPlaylist(s)) { showNotif('Déjà dans la playlist'); return; }
   playlist.push(s);
@@ -873,7 +982,6 @@ function nextSong() {
   if (!playlist.length) return;
   let next;
   if (shuffleMode) {
-    // Avoid replaying same song if playlist has more than 1 track
     do { next = Math.floor(Math.random() * playlist.length); }
     while (playlist.length > 1 && next === currentIdx);
   } else {
@@ -884,7 +992,7 @@ function nextSong() {
 
 document.getElementById('btn-autoplay').addEventListener('click', function() {
   autoplayMode = !autoplayMode;
-  if (autoplayMode) loopMode = false; // mutually exclusive
+  if (autoplayMode) loopMode = false;
   this.classList.toggle('active-play', autoplayMode);
   document.getElementById('btn-loop').classList.toggle('active-loop', false);
   showNotif(autoplayMode ? '▶ Lecture continue activée' : '▶ Lecture continue désactivée');
@@ -892,7 +1000,7 @@ document.getElementById('btn-autoplay').addEventListener('click', function() {
 
 document.getElementById('btn-loop').addEventListener('click', function() {
   loopMode = !loopMode;
-  if (loopMode) autoplayMode = false; // mutually exclusive
+  if (loopMode) autoplayMode = false;
   this.classList.toggle('active-loop', loopMode);
   document.getElementById('btn-autoplay').classList.toggle('active-play', false);
   showNotif(loopMode ? '↺ Répétition activée' : '↺ Répétition désactivée');
@@ -904,7 +1012,7 @@ document.getElementById('btn-shuffle').addEventListener('click', function() {
   showNotif(shuffleMode ? '⇄ Shuffle activé' : '⇄ Shuffle désactivé');
 });
 
-// ── Playlist clicks ───────────────────────────────────────────────────────
+// ── Playlist interactions ─────────────────────────────────────────────────
 document.getElementById('playlist-ul').addEventListener('click', e => {
   const li = e.target.closest('li[data-pl-i]');
   const rm = e.target.closest('[data-remove]');
@@ -920,7 +1028,7 @@ document.getElementById('playlist-ul').addEventListener('click', e => {
   if (li) playSong(parseInt(li.dataset.plI));
 });
 
-// ── Results clicks ────────────────────────────────────────────────────────
+// ── Results interactions ──────────────────────────────────────────────────
 document.getElementById('results-body').addEventListener('click', e => {
   const btn = e.target.closest('.add-row-btn');
   const row = e.target.closest('tr[data-i]');
@@ -957,7 +1065,7 @@ document.getElementById('btn-add-all').addEventListener('click', () => {
   showNotif(`${added} titre(s) ajouté(s) à la playlist`);
 });
 
-// ── Clear / Save / Export ────────────────────────────────────────────────
+// ── Clear / Save / Load playlist ──────────────────────────────────────────
 document.getElementById('btn-clear-pl').addEventListener('click', () => {
   playlist = []; currentIdx = -1;
   if (ytReady && ytPlayer) ytPlayer.stopVideo();
@@ -970,37 +1078,75 @@ document.getElementById('btn-clear-pl').addEventListener('click', () => {
 });
 
 document.getElementById('btn-save-pl').addEventListener('click', () => {
-  try {
-    localStorage.setItem('disco_playlist', JSON.stringify(playlist));
-    localStorage.setItem('disco_currentIdx', currentIdx);
-    showNotif('Playlist sauvegardée ✓');
-  } catch(e) { showNotif('Erreur sauvegarde'); }
-});
-
-document.getElementById('btn-export-pl').addEventListener('click', () => {
   if (!playlist.length) { showNotif('Playlist vide'); return; }
   const lines = ['Artiste;Titre;Année;Note;YouTube ID'];
-  playlist.forEach(s => lines.push(`${s.artist};${s.title};${s.year};${s.note||'—'};${s.ytid}`));
+  playlist.forEach(s => lines.push(`"${s.artist}";"${s.title}";${s.year};${s.note||''};${s.ytid}`));
   const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = 'ma_playlist.csv';
   a.click();
-  showNotif('Export CSV téléchargé');
+  showNotif('Playlist exportée en CSV');
 });
 
-// ── CSV File load ─────────────────────────────────────────────────────────
-document.getElementById('csv-input').addEventListener('change', function() {
+document.getElementById('btn-load-pl').addEventListener('click', () => {
+  document.getElementById('pl-file-input').click();
+});
+document.getElementById('pl-file-input').addEventListener('change', function() {
   const file = this.files[0];
   if (!file) return;
   const reader = new FileReader();
   reader.onload = e => {
-    allSongs = parseCSV(e.target.result);
+    try {
+      const newPl = parseFile(e.target.result, file.name);
+      if (!newPl.length) {
+        showNotif('Aucune piste valide trouvée');
+        return;
+      }
+      playlist = newPl;
+      currentIdx = -1;
+      renderPlaylist();
+      renderResults();
+      showNotif(`${playlist.length} titre(s) chargés dans la playlist`);
+    } catch(err) {
+      showNotif('Erreur lors du chargement de la playlist');
+    }
+  };
+  reader.readAsText(file, 'utf-8');
+  this.value = '';
+});
+
+// ── Global DB load ────────────────────────────────────────────────────────
+document.getElementById('btn-load-global').addEventListener('click', () => {
+  document.getElementById('global-file-input').click();
+});
+document.getElementById('global-file-input').addEventListener('change', function() {
+  const file = this.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    allSongs = parseFile(e.target.result, file.name);
     document.getElementById('song-count').textContent = `${allSongs.length} titres`;
     applyFilters();
     showNotif(`${allSongs.length} titres chargés`);
   };
   reader.readAsText(file, 'utf-8');
+  this.value = '';
+});
+
+// ── Global DB save ────────────────────────────────────────────────────────
+document.getElementById('btn-save-global').addEventListener('click', () => {
+  if (!allSongs.length) { showNotif('Aucune donnée à sauvegarder'); return; }
+  const headers = 'Interpretes;N°;Titres;Duree;Annee;Album original;Note;Lien youtube;Ordre';
+  const rows = allSongs.map(s => 
+    `"${s.artist}";"${s.order||''}";"${s.title}";"${s.duration}";${s.year};"${s.album}";${s.note||''};${s.ytid};${s.order||''}`
+  );
+  const blob = new Blob([headers + '\n' + rows.join('\n')], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'jukebox_db.csv';
+  a.click();
+  showNotif('Base globale sauvegardée (CSV)');
 });
 
 // ── Filters events ────────────────────────────────────────────────────────
@@ -1016,6 +1162,18 @@ document.getElementById('btn-reset').addEventListener('click', () => {
   document.getElementById('f-note').value = '';
   document.getElementById('f-album').value = '';
   applyFilters();
+});
+
+// ── Layout toggles ────────────────────────────────────────────────────────
+document.getElementById('btn-toggle-filters').addEventListener('click', () => {
+  const main = document.getElementById('main-layout');
+  main.classList.toggle('right-collapsed');
+  const btn = document.getElementById('btn-toggle-filters');
+  if (main.classList.contains('right-collapsed')) {
+    btn.innerHTML = '☰ Filtres (off)';
+  } else {
+    btn.innerHTML = '☰ Filtres';
+  }
 });
 
 // ── Notification ──────────────────────────────────────────────────────────
@@ -1034,16 +1192,26 @@ function init() {
   document.getElementById('song-count').textContent = `${allSongs.length} titres`;
 
   try {
-    const saved = localStorage.getItem('disco_playlist');
+    const saved = localStorage.getItem('timemachine_playlist');
     if (saved) {
       playlist = JSON.parse(saved);
-      currentIdx = parseInt(localStorage.getItem('disco_currentIdx')) || -1;
+      currentIdx = parseInt(localStorage.getItem('timemachine_currentIdx')) || -1;
       renderPlaylist();
     }
   } catch(e) {}
 
   applyFilters();
 }
+
+// Auto-save playlist to localStorage
+const originalRenderPlaylist = renderPlaylist;
+renderPlaylist = function() {
+  originalRenderPlaylist();
+  try {
+    localStorage.setItem('timemachine_playlist', JSON.stringify(playlist));
+    localStorage.setItem('timemachine_currentIdx', currentIdx);
+  } catch(e) {}
+};
 
 init();
 </script>
